@@ -1,0 +1,37 @@
+{
+  "game": {
+    "id": "flashcards",
+    "title": "Flash Cards",
+    "description": "Learn vocabulary with interactive flashcards",
+    "iconEmoji": "📚",
+    "status": "enabled"
+  },
+  "deck": {
+    "languageCode": "en",
+    "title": "English Basics",
+    "description": "20 common English words with pictures — great for beginners!",
+    "version": 1
+  },
+  "cards": [
+    { "term": "Cat",      "tags": ["animal"], "emoji": "🐱" },
+    { "term": "Dog",      "tags": ["animal"], "emoji": "🐶" },
+    { "term": "Fish",     "tags": ["animal", "water"], "emoji": "🐟" },
+    { "term": "Bird",     "tags": ["animal"], "emoji": "🐦" },
+    { "term": "Rabbit",   "tags": ["animal"], "emoji": "🐰" },
+    { "term": "Apple",    "tags": ["food", "fruit"], "emoji": "🍎" },
+    { "term": "Banana",   "tags": ["food", "fruit"], "emoji": "🍌" },
+    { "term": "Tree",     "tags": ["nature"], "emoji": "🌳" },
+    { "term": "Sun",      "tags": ["nature", "sky"], "emoji": "☀️" },
+    { "term": "Moon",     "tags": ["nature", "sky"], "emoji": "🌙" },
+    { "term": "Star",     "tags": ["nature", "sky"], "emoji": "⭐" },
+    { "term": "House",    "tags": ["place"], "emoji": "🏠" },
+    { "term": "Car",      "tags": ["vehicle"], "emoji": "🚗" },
+    { "term": "Book",     "tags": ["object", "school"], "emoji": "📖" },
+    { "term": "Ball",     "tags": ["toy", "sport"], "emoji": "⚽" },
+    { "term": "Water",    "tags": ["nature", "drink"], "emoji": "💧" },
+    { "term": "Flower",   "tags": ["nature", "plant"], "emoji": "🌸" },
+    { "term": "Hat",      "tags": ["clothing"], "emoji": "🎩" },
+    { "term": "School",   "tags": ["place", "education"], "emoji": "🏫" },
+    { "term": "Rainbow",  "tags": ["nature", "sky"], "emoji": "🌈" }
+  ]
+}

@@ -1,0 +1,101 @@
+name: CI
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main]
+
+jobs:
+  test:
+    name: Lint, Type-check, Unit Tests
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: kids-games-platform
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 9
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: 'pnpm'
+          cache-dependency-path: 'kids-games-platform/pnpm-lock.yaml'
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Typecheck
+        run: pnpm typecheck
+
+      - name: Lint
+        run: pnpm lint
+
+      - name: Unit tests (API)
+        run: pnpm --filter @kids-games/api test:unit
+
+      - name: Unit tests (Web)
+        run: pnpm --filter @kids-games/web test
+
+  integration:
+    name: Integration Tests
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: kids-games-platform
+
+    services:
+      postgres:
+        image: postgres:16-alpine
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: kids_games_test
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 9
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: 'pnpm'
+          cache-dependency-path: 'kids-games-platform/pnpm-lock.yaml'
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Run migrations
+        working-directory: kids-games-platform/apps/api
+        env:
+          DATABASE_URL: postgresql://postgres:postgres@localhost:5432/kids_games_test
+        run: pnpm db:migrate
+
+      - name: Seed database
+        working-directory: kids-games-platform/apps/api
+        env:
+          DATABASE_URL: postgresql://postgres:postgres@localhost:5432/kids_games_test
+        run: pnpm db:seed
+
+      - name: Integration tests
+        working-directory: kids-games-platform/apps/api
+        env:
+          TEST_DATABASE_URL: postgresql://postgres:postgres@localhost:5432/kids_games_test
+          JWT_SECRET: ci-test-jwt-secret-32-chars-min-!!!
+          REFRESH_SECRET: ci-test-refresh-secret-32-chars-!!!!
+        run: pnpm test:integration

@@ -1,0 +1,70 @@
+---
+# Podman Compose for Kids Games Platform
+# Usage: podman-compose up -d
+# Requires: podman, podman-compose
+
+version: "3.9"
+
+services:
+  db:
+    image: postgres:16-alpine
+    container_name: kids-games-db
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: kids_games_dev
+    ports:
+      - "5432:5432"
+    volumes:
+      - db_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  api:
+    build:
+      context: ../..
+      dockerfile: infra/podman/Dockerfile.api
+    container_name: kids-games-api
+    env_file:
+      - ../../apps/api/.env
+    environment:
+      DATABASE_URL: postgresql://postgres:postgres@db:5432/kids_games_dev
+      NODE_ENV: production
+    depends_on:
+      db:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:3000/health || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  web:
+    build:
+      context: ../..
+      dockerfile: infra/podman/Dockerfile.web
+    container_name: kids-games-web
+    depends_on:
+      - api
+
+  caddy:
+    image: caddy:2-alpine
+    container_name: kids-games-caddy
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./caddy/Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy_data:/data
+      - caddy_config:/config
+    depends_on:
+      - api
+      - web
+
+volumes:
+  db_data:
+  caddy_data:
+  caddy_config:

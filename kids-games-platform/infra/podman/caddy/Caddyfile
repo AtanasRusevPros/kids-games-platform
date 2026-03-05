@@ -1,0 +1,28 @@
+# Caddyfile for Kids Games Platform (local dev / single-server production)
+# Caddy handles HTTPS automatically in production.
+# For localhost: Caddy will use HTTP only.
+
+localhost {
+    # Proxy API requests
+    handle /api/* {
+        uri strip_prefix /api
+        reverse_proxy api:3000
+    }
+
+    # Serve web SPA — proxy to web container (serves built static files)
+    handle {
+        reverse_proxy web:80
+    }
+}
+
+# Production domain: uncomment and change to your domain
+# yourdomain.com {
+#     handle /api/* {
+#         uri strip_prefix /api
+#         reverse_proxy api:3000
+#     }
+#
+#     handle {
+#         reverse_proxy web:80
+#     }
+# }

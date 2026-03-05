@@ -1,0 +1,37 @@
+{
+  "name": "kids-games-platform",
+  "private": true,
+  "version": "0.1.0",
+  "scripts": {
+    "dev:api": "pnpm --filter @kids-games/api dev",
+    "dev:web": "pnpm --filter @kids-games/web dev",
+    "build": "pnpm -r build",
+    "lint": "pnpm -r lint",
+    "typecheck": "pnpm -r typecheck",
+    "test:unit": "pnpm --filter @kids-games/shared test && pnpm --filter @kids-games/game-sdk test && pnpm --filter @kids-games/api test:unit",
+    "test:integration": "pnpm --filter @kids-games/api test:integration",
+    "test:web": "pnpm --filter @kids-games/web test",
+    "test:e2e": "pnpm --filter @kids-games/web test:e2e",
+    "test": "pnpm typecheck && pnpm lint && pnpm test:unit",
+    "test:full": "pnpm test && pnpm test:integration && pnpm test:web && pnpm test:e2e",
+    "db:migrate": "pnpm --filter @kids-games/api db:migrate",
+    "db:migrate:down": "pnpm --filter @kids-games/api db:migrate:down",
+    "db:seed": "pnpm --filter @kids-games/api db:seed",
+    "db:reset": "pnpm --filter @kids-games/api db:reset",
+    "stack:backup": "./infra/podman/scripts/backup.sh",
+    "stack:restore": "./infra/podman/scripts/restore.sh",
+    "test:e2e:stack": "pnpm --filter @kids-games/web test:e2e:stack"
+  },
+  "devDependencies": {
+    "@typescript-eslint/eslint-plugin": "^7.18.0",
+    "@typescript-eslint/parser": "^7.18.0",
+    "eslint": "^8.57.0",
+    "eslint-plugin-react": "^7.35.0",
+    "eslint-plugin-react-hooks": "^4.6.2",
+    "typescript": "^5.5.4"
+  },
+  "engines": {
+    "node": ">=18.0.0",
+    "pnpm": ">=8.0.0"
+  }
+}
